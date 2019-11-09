@@ -46,27 +46,20 @@ with open(os.path.join('files', 'dna.fasta')) as dna_file:
         else:
             genes[gen_title] += line.strip()
 
-#print(genes)
 
 def translate_from_dna_to_rna(dna):
 
     '''Перевод последовательности ДНК в РНК'''
 
-    convert_table = {
-        'G': 'C',
-        'C': 'G',
-        'A': 'U',
-        'T': 'A'
-    }
-    rna = ''
-    for i in dna:
-        rna += convert_table[i]
+    rna = dna.replace('T', 'U')
     return rna
 
 
 def count_nucleotides(dna):
+
     '''Построение статистики по входящим в
     последовательность ДНК нуклеотидам длякаждого гена'''
+
     num_of_nucleotides = {}
     for i in dna:
         if i not in num_of_nucleotides:
