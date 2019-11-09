@@ -34,8 +34,19 @@ P.S. За незакрытый файловый дескриптор - кара�
 """
 
 # read the file dna.fasta
-dna = None
+import os
 
+
+genes = {}
+with open(os.path.join('files', 'dna.fasta')) as dna_file:
+    for line in dna_file:
+        if line.startswith('>'):
+            gen_title = line.strip('>\n')
+            genes[gen_title] = ''
+        else:
+            genes[gen_title] += line.strip()
+
+#print(genes)
 
 def translate_from_dna_to_rna(dna):
     
@@ -46,7 +57,7 @@ def translate_from_dna_to_rna(dna):
 
 def count_nucleotides(dna):
     
-    """your code here"""
+    
     
     return num_of_nucleotides
 
