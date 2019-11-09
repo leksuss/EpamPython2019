@@ -49,9 +49,18 @@ with open(os.path.join('files', 'dna.fasta')) as dna_file:
 #print(genes)
 
 def translate_from_dna_to_rna(dna):
-    
-    """your code here"""
-    
+
+    '''Перевод последовательности ДНК в РНК'''
+
+    convert_table = {
+        'G': 'C',
+        'C': 'G',
+        'A': 'U',
+        'T': 'A'
+    }
+    rna = ''
+    for i in dna:
+        rna += convert_table[i]
     return rna
 
 
