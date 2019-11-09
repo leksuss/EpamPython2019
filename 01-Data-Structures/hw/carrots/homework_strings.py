@@ -56,9 +56,13 @@ def translate_from_dna_to_rna(dna):
 
 
 def count_nucleotides(dna):
-    
-    
-    
+    '''Построение статистики по входящим в
+    последовательность ДНК нуклеотидам длякаждого гена'''
+    num_of_nucleotides = {}
+    for i in dna:
+        if i not in num_of_nucleotides:
+            num_of_nucleotides[i] = 0
+        num_of_nucleotides[i] += 1
     return num_of_nucleotides
 
 
