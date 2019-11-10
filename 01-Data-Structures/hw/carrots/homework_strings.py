@@ -1,45 +1,9 @@
-""""
-
-Задание 1
-
-0) Повторение понятий из биологии (ДНК, РНК, нуклеотид, протеин, кодон)
-
-1) Построение статистики по входящим в последовательность ДНК нуклеотидам 
-для каждого гена (например: [A - 46, C - 66, G - 23, T - 34])
-
-2) Перевод последовательности ДНК в РНК (окей, Гугл)
-
-3) Перевод последовательности РНК в протеин*
-
-
-*В папке files вы найдете файл rna_codon_table.txt - 
-в нем содержится таблица переводов кодонов РНК в аминокислоту, 
-составляющую часть полипептидной цепи белка.
-
-
-Вход: файл dna.fasta с n-количеством генов
-
-Выход - 3 файла:
- - статистика по количеству нуклеотидов в ДНК
- - последовательность РНК для каждого гена
- - последовательность кодонов для каждого гена
-
- ** Если вы умеете в matplotlib/seaborn или еще что, 
- welcome за дополнительными баллами за
- гистограммы по нуклеотидной статистике.
- (Не забудьте подписать оси)
-
-P.S. За незакрытый файловый дескриптор - караем штрафным дезе.
-
-"""
-
-# read the file dna.fasta
 import os
 
 
 def translate_from_dna_to_rna(dna):
 
-    '''Перевод последовательности ДНК в РНК'''
+    '''Convert DNA to RNA'''
 
     rna = dna.replace('T', 'U')
     return rna
@@ -47,8 +11,7 @@ def translate_from_dna_to_rna(dna):
 
 def count_nucleotides(dna):
 
-    '''Построение статистики по входящим в
-    последовательность ДНК нуклеотидам длякаждого гена'''
+    '''Count nucleotides in DNA'''
 
     num_of_nucleotides = {}
     for i in dna:
@@ -60,8 +23,7 @@ def count_nucleotides(dna):
 
 def rna_to_protein_mapping(path_to_file):
 
-    '''Извлекает из файла соответствие RNA<->protein
-    Получает путь к файлу, возвращает словарь'''
+    '''Extract from file RNA<->protein mapping and return dict'''
 
     path, file = os.path.split(path_to_file)
     rna_to_protein_dict = {}
@@ -76,7 +38,7 @@ def rna_to_protein_mapping(path_to_file):
 
 def translate_rna_to_protein(rna, rna_to_protein_map):
 
-    '''Перевод последовательности РНК в протеин'''
+    '''Convert RNA to protein'''
 
     protein = []
     for i in range(0, len(rna), 3):
@@ -107,6 +69,9 @@ with open(os.path.join(files_dir, dna_source_file)) as file:
             genes[gene_title] += line.strip()
 if len(genes):
     print(f'Data from file "{dna_source_file}" loaded sucessfuly')
+else:
+    print('No genes was found :(')
+    exit()
 
 # calc DNA statistics and write it to the file
 with open(os.path.join(files_dir, dna_stats_res_file), 'w') as file:
