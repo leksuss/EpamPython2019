@@ -84,6 +84,20 @@ def rna_to_protein_mapping(path_to_file):
     return rna_to_protein_dict
 
 
+def translate_rna_to_protein(rna, rna_to_protein_map):
+
+    '''Перевод последовательности РНК в протеин'''
+
+    protein = []
+    for i in range(0, len(rna), 3):
+        rna_block = rna[i:i + 3]
+        if rna_block in rna_to_protein_map:
+            protein.append(rna_to_protein_map[rna_block])
+        else:
+            raise Exception("Non-valid RNA!")
+    return protein
+
+
 def translate_rna_to_protein(rna):
     
     """your code here"""
