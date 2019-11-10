@@ -68,6 +68,22 @@ def count_nucleotides(dna):
     return num_of_nucleotides
 
 
+def rna_to_protein_mapping(path_to_file):
+
+    '''Извлекает из файла соответствие RNA<->protein
+    Получает путь к файлу, возвращает словарь'''
+
+    path, file = os.path.split(path_to_file)
+    rna_to_protein_dict = {}
+    with open(os.path.join(path, file)) as file:
+        for line in file:
+            for item in line.split('   '):
+                if item:
+                    convert_pair = item.strip().split()
+                    rna_to_protein_dict[convert_pair[0]] = convert_pair[1]
+    return rna_to_protein_dict
+
+
 def translate_rna_to_protein(rna):
     
     """your code here"""
