@@ -105,6 +105,8 @@ with open(os.path.join(files_dir, dna_source_file)) as file:
             genes[gene_title] = ''
         else:
             genes[gene_title] += line.strip()
+if len(genes):
+    print(f'Data from file "{dna_source_file}" loaded sucessfuly')
 
 # calc DNA statistics and write it to the file
 with open(os.path.join(files_dir, dna_stats_res_file), 'w') as file:
@@ -113,12 +115,16 @@ with open(os.path.join(files_dir, dna_stats_res_file), 'w') as file:
         stats = count_nucleotides(gene)
         stats_list = [dna + ' - ' + str(stats[dna]) for dna in sorted(stats)]
         file.write(', '.join(stats_list) + '\n')
+if os.path.getsize(os.path.join(files_dir, dna_stats_res_file)) != 0:
+    print(f'DNA statistics has been written to "{dna_stats_res_file}" file')
 
 # convert DNA to RNA write result to the file
 with open(os.path.join(files_dir, rna_res_file), 'w') as file:
     for gene_title, gene in genes.items():
         file.write('>[RNA] ' + gene_title + '\n')
         file.write(translate_from_dna_to_rna(gene) + '\n')
+if os.path.getsize(os.path.join(files_dir, rna_res_file)) != 0:
+    print(f'DNA has been converted to RNA & written to "{rna_res_file}" file')
 
 # convert RNA to protein and write result to the file
 with open(os.path.join(files_dir, codon_res_file), 'w') as file:
@@ -127,3 +133,6 @@ with open(os.path.join(files_dir, codon_res_file), 'w') as file:
         file.write('>[protein] ' + gene_title + '\n')
         rna = translate_from_dna_to_rna(gene)
         file.write(''.join(translate_rna_to_protein(rna, rna_protein)) + '\n')
+if os.path.getsize(os.path.join(files_dir, rna_res_file)) != 0:
+    print(f'DNA has been converted to RNA & written to "{rna_res_file}" file')
+
