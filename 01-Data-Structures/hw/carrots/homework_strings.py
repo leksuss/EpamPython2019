@@ -105,3 +105,13 @@ with open(os.path.join(files_dir, dna_source_file)) as file:
             genes[gene_title] = ''
         else:
             genes[gene_title] += line.strip()
+
+# calc DNA statistics and write it to the file
+with open(os.path.join(files_dir, dna_stats_res_file), 'w') as file:
+    for gene_title, gene in genes.items():
+        file.write('>' + gene_title + '\n')
+        stats = count_nucleotides(gene)
+        stats_list = [dna + ' - ' + str(stats[dna]) for dna in sorted(stats)]
+        file.write(', '.join(stats_list) + '\n')
+
+
