@@ -84,17 +84,19 @@ def translate_rna_to_protein(rna, rna_to_protein_map):
         if rna_block in rna_to_protein_map:
             protein.append(rna_to_protein_map[rna_block])
         else:
+            print('position:', i, rna_block)
             raise Exception("Non-valid RNA!")
+
     return protein
 
 
 # file names we are working
-files_dir = 'files'
+files_dir = 'files/'
 dna_source_file = 'dna.fasta'
 rna_codon_map_file = 'rna_codon_table.txt'
 dna_stats_res_file = 'dna_stats.txt'
 rna_res_file = 'rna.txt'
-codon_res_file = 'codon.txt'
+codon_res_file = 'protein.txt'
 
 # read source dna file
 genes = {}
@@ -117,7 +119,16 @@ with open(os.path.join(files_dir, dna_stats_res_file), 'w') as file:
 # convert DNA to RNA write result to the file
 with open(os.path.join(files_dir, rna_res_file), 'w') as file:
     for gene_title, gene in genes.items():
-        file.write('>[RNA]' + gene_title + '\n')
+        file.write('>[RNA] ' + gene_title + '\n')
         file.write(translate_from_dna_to_rna(gene) + '\n')
 
-
+# convert RNA to protein and write result to the file
+with open(os.path.join(files_dir, codon_res_file), 'w') as file:
+    rna_protein = rna_to_protein_mapping(files_dir + rna_codon_map_file)
+    for gene_title, gene in genes.items():
+        file.write('>[protein] ' + gene_title + '\n')
+        rna = translate_from_dna_to_rna(gene)
+        if len(gene) % 3 != 0:
+            file.write('gene with frameshift mutation!\n')
+            continue
+        file.write(''.join(translate_rna_to_protein(rna, rna_protein)) + '\n')
