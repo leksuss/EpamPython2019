@@ -84,9 +84,7 @@ def translate_rna_to_protein(rna, rna_to_protein_map):
         if rna_block in rna_to_protein_map:
             protein.append(rna_to_protein_map[rna_block])
         else:
-            print('position:', i, rna_block)
-            raise Exception("Non-valid RNA!")
-
+            print('Non-valid RNA! Position:', i, 'block:', rna_block)
     return protein
 
 
@@ -128,7 +126,4 @@ with open(os.path.join(files_dir, codon_res_file), 'w') as file:
     for gene_title, gene in genes.items():
         file.write('>[protein] ' + gene_title + '\n')
         rna = translate_from_dna_to_rna(gene)
-        if len(gene) % 3 != 0:
-            file.write('gene with frameshift mutation!\n')
-            continue
         file.write(''.join(translate_rna_to_protein(rna, rna_protein)) + '\n')
