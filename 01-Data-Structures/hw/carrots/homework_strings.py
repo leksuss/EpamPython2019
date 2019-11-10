@@ -37,16 +37,6 @@ P.S. За незакрытый файловый дескриптор - кара�
 import os
 
 
-genes = {}
-with open(os.path.join('files', 'dna.fasta')) as dna_file:
-    for line in dna_file:
-        if line.startswith('>'):
-            gen_title = line.strip('>\n')
-            genes[gen_title] = ''
-        else:
-            genes[gen_title] += line.strip()
-
-
 def translate_from_dna_to_rna(dna):
 
     '''Перевод последовательности ДНК в РНК'''
@@ -98,8 +88,20 @@ def translate_rna_to_protein(rna, rna_to_protein_map):
     return protein
 
 
-def translate_rna_to_protein(rna):
-    
-    """your code here"""
-    
-    return protein
+# file names we are working
+files_dir = 'files'
+dna_source_file = 'dna.fasta'
+rna_codon_map_file = 'rna_codon_table.txt'
+dna_stats_res_file = 'dna_stats.txt'
+rna_res_file = 'rna.txt'
+codon_res_file = 'codon.txt'
+
+# read source dna file
+genes = {}
+with open(os.path.join(files_dir, dna_source_file)) as file:
+    for line in file:
+        if line.startswith('>'):
+            gene_title = line.strip('>\n')
+            genes[gene_title] = ''
+        else:
+            genes[gene_title] += line.strip()
