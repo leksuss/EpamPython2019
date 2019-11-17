@@ -3,7 +3,7 @@ import os
 
 def translate_from_dna_to_rna(dna):
 
-    '''Convert DNA to RNA'''
+    """Convert DNA to RNA"""
 
     rna = dna.replace('T', 'U')
     return rna
@@ -11,7 +11,7 @@ def translate_from_dna_to_rna(dna):
 
 def count_nucleotides(dna):
 
-    '''Count nucleotides in DNA'''
+    """Count nucleotides in DNA"""
 
     num_of_nucleotides = {}
     for i in dna:
@@ -23,7 +23,7 @@ def count_nucleotides(dna):
 
 def rna_to_protein_mapping(path_to_file):
 
-    '''Extract from file RNA<->protein mapping and return dict'''
+    """Extract from file RNA<->protein mapping and return dict"""
 
     path, file = os.path.split(path_to_file)
     rna_to_protein_dict = {}
@@ -38,7 +38,7 @@ def rna_to_protein_mapping(path_to_file):
 
 def translate_rna_to_protein(rna, rna_to_protein_map):
 
-    '''Convert RNA to protein'''
+    """Convert RNA to protein"""
 
     protein = []
     for i in range(0, len(rna), 3):
@@ -100,4 +100,3 @@ with open(os.path.join(files_dir, codon_res_file), 'w') as file:
         file.write(''.join(translate_rna_to_protein(rna, rna_protein)) + '\n')
 if os.path.getsize(os.path.join(files_dir, rna_res_file)) != 0:
     print(f'DNA has been converted to RNA & written to "{rna_res_file}" file')
-
