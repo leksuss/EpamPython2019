@@ -2,7 +2,7 @@ from collections import namedtuple
 
 print("Welcome to Epam Collect Statistics 2019!")
 print("Please sit back and relax while this script works on your computer.")
-print("It takes about 8-15 seconds depend on your CPU speed.")
+print("It takes about 12-15 seconds depend on your CPU speed.")
 
 # you must construct additional p̶y̶l̶o̶n̶s̶ structures!
 # set data structure for variety statistics
@@ -17,12 +17,12 @@ varieties = {
 var_stat = {}
 for variety in varieties:
     var_stat[variety] = {
-        'average_price': [],
+        'average_price': 0,
         'min_price': 10e6,
         'max_price': 0,
         'most_common_region': {},
         'most_common_country': {},
-        'average_score': [],
+        'average_score': 0,
         'count': 0
     }
 
@@ -32,6 +32,7 @@ glob_stat = {
     'cheapest_wine': {'price': 10e6},
     'highest_score': {'points': 0},
     'lowest_score': {'points': 100},
+    'countries': {},
     'most_expensive_coutry': {'price': 0},
     'cheapest_coutry': {'price': 10e6},
     'most_rated_country': {'points': 0},
@@ -46,29 +47,6 @@ Wine = namedtuple('Wine', [
     'taster_twitter_handle', 'price', 'designation',
     'variety', 'region_1', 'region_2', 'province', 'country', 'winery'
 ])
-
-'''
-3. Найти для каждого из сортов
-`Gew[üu]rztraminer, Riesling, Merlot, Madera, Tempranillo, Red Blend`
- следующую информацию:
-   * `average_price`
-   * `min_price`
-   * `max_price`
-   * `most_common_region` где больше всего вин этого сорта производят ?
-   * `most_common_country`
-   * `avarage_score`
-
-Для всех объектов:
-   * `most_expensive_wine` в случае коллизий тут и далее делаем список.[]
-   * `cheapest_wine`[]
-   * `highest_score`[]
-   * `lowest_score`[]
-   * `most_expensive_coutry` в среднем самое дорогое вино среди стран
-   * `cheapest_coutry` в среднем самое дешевое вино среди стран
-   * `most_rated_country`
-   * `underrated_country`
-   * `most_active_commentator`
-'''
 
 # set source and result files
 source_data_files = ['winedata_1.json', 'winedata_2.json']
@@ -109,16 +87,14 @@ for raw_item in raw_items:
     # calculate varieties statistics
     if wine.variety in varieties:
         if wine.price:
-            var_stat[wine.variety]['average_price'].append(wine.price)
-            var_stat[wine.variety]['average_score'].append(wine.points)
+            var_stat[wine.variety]['average_price'] += wine.price
+            var_stat[wine.variety]['average_score'] += wine.points
             var_stat[wine.variety]['count'] += 1
-
             # min-max price
             if var_stat[wine.variety]['max_price'] < wine.price:
                 var_stat[wine.variety]['max_price'] = wine.price
             if var_stat[wine.variety]['min_price'] > wine.price:
                 var_stat[wine.variety]['min_price'] = wine.price
-
         # most common regions
         if wine.region_1:
             if wine.region_1 not in \
@@ -130,7 +106,6 @@ for raw_item in raw_items:
                     var_stat[wine.variety]['most_common_region']:
                 var_stat[wine.variety]['most_common_region'][wine.region_2] = 0
             var_stat[wine.variety]['most_common_region'][wine.region_2] += 1
-
         # most common country
         if wine.country:
             if wine.country not in \
@@ -152,49 +127,32 @@ for raw_item in raw_items:
             glob_stat['cheapest_wine']['items'] = {wine.title}
         elif wine.price == glob_stat['cheapest_wine']['price']:
             glob_stat['cheapest_wine']['items'].add(wine.title)
-
-        if wine.country:
-            # most expensive country
-            if wine.price > glob_stat['most_expensive_coutry']['price']:
-                glob_stat['most_expensive_coutry']['price'] = wine.price
-                glob_stat['most_expensive_coutry']['items'] = {wine.country}
-            elif wine.price == glob_stat['most_expensive_coutry']['price']:
-                glob_stat['most_expensive_coutry']['items'].add(wine.country)
-            # cheapest country
-            if wine.price < glob_stat['cheapest_coutry']['price']:
-                glob_stat['cheapest_coutry']['price'] = wine.price
-                glob_stat['cheapest_coutry']['items'] = {wine.country}
-            elif wine.price == glob_stat['cheapest_coutry']['price']:
-                glob_stat['cheapest_coutry']['items'].add(wine.country)
-
+    # collect stats for countries for price and points
     if wine.country:
-        # most rated country
-        if wine.points > glob_stat['most_rated_country']['points']:
-            glob_stat['most_rated_country']['points'] = wine.points
-            glob_stat['most_rated_country']['items'] = {wine.country}
-        elif wine.points == glob_stat['most_rated_country']['points']:
-            glob_stat['most_rated_country']['items'].add(wine.country)
-        # underrated country
-        if wine.points < glob_stat['underrated_country']['points']:
-            glob_stat['underrated_country']['points'] = wine.points
-            glob_stat['underrated_country']['items'] = {wine.country}
-        elif wine.points == glob_stat['underrated_country']['points']:
-            glob_stat['underrated_country']['items'].add(wine.country)
-
+        if wine.country not in glob_stat['countries']:
+            glob_stat['countries'][wine.country] = {
+                'price': 0,
+                'points': 0,
+                'count_price': 0,
+                'count_points': 0
+            }
+        if wine.price:
+            glob_stat['countries'][wine.country]['price'] += wine.price
+            glob_stat['countries'][wine.country]['count_price'] += 1
+        glob_stat['countries'][wine.country]['points'] += wine.points
+        glob_stat['countries'][wine.country]['count_points'] += 1
     # highest score
     if wine.points > glob_stat['highest_score']['points']:
         glob_stat['highest_score']['points'] = wine.points
         glob_stat['highest_score']['items'] = {wine.title}
     elif wine.points == glob_stat['highest_score']['points']:
         glob_stat['highest_score']['items'].add(wine.title)
-
     # lowest_score
     if wine.points < glob_stat['lowest_score']['points']:
         glob_stat['lowest_score']['points'] = wine.points
         glob_stat['lowest_score']['items'] = {wine.title}
     elif wine.points == glob_stat['lowest_score']['points']:
         glob_stat['lowest_score']['items'].add(wine.title)
-
     # most_active_commentator
     if wine.taster_name:
         if wine.taster_name not in glob_stat['tasters']:
@@ -209,18 +167,18 @@ print(f"Found {len_wines} unique records")
 # set structures for storing data for json and markdown formats
 var_stat_json = []
 var_stat_md = '''
-| Variety | Av price | Min Price | Max Price | Region | Country | Av Score |
+| Variety | Av Price | Min Price | Max Price | Region | Country | Av Score |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ |\n'''
 # process intermediate variety stat to finished
 for variety in sorted(var_stat):
     # for json file
     if not var_stat[variety]['count']:
-        print(f'Sorry, there is no variety "{variety}" in the collection')
+        print(f'WARNING! There is no variety "{variety}" in the collection')
         continue
-    var_average_price = round(sum(
-        var_stat[variety]['average_price']) / var_stat[variety]['count'], 2)
-    var_average_score = round(sum(
-        var_stat[variety]['average_score']) / var_stat[variety]['count'], 2)
+    var_average_price = round(
+        var_stat[variety]['average_price'] / var_stat[variety]['count'], 2)
+    var_average_score = round(
+        var_stat[variety]['average_score'] / var_stat[variety]['count'], 2)
     var_region = max(var_stat[variety]['most_common_region'],
                      key=var_stat[variety]['most_common_region'].get)
     var_country = max(var_stat[variety]['most_common_country'],
@@ -242,12 +200,46 @@ for variety in sorted(var_stat):
                     f"{var_min_price} | {var_max_price} | " + \
                     f"{var_region} | {var_country} | {var_average_score} |\n"
 
+# process price/points statistics for countries
+for country, country_stat in glob_stat['countries'].items():
+    if country_stat['count_price']:
+        av_price = round(
+            country_stat['price'] / country_stat['count_price'], 2)
+    av_points = round(
+        country_stat['points'] / country_stat['count_points'], 2)
+    # most expensive country
+    if av_price > glob_stat['most_expensive_coutry']['price']:
+        glob_stat['most_expensive_coutry']['price'] = av_price
+        glob_stat['most_expensive_coutry']['items'] = {country}
+    elif av_price == glob_stat['most_expensive_coutry']['price']:
+        glob_stat['most_expensive_coutry']['items'].add(country)
+    # cheapest country
+    if av_price < glob_stat['cheapest_coutry']['price']:
+        glob_stat['cheapest_coutry']['price'] = av_price
+        glob_stat['cheapest_coutry']['items'] = {country}
+    elif av_price == glob_stat['cheapest_coutry']['price']:
+        glob_stat['cheapest_coutry']['items'].add(country)
+
+    # most rated country
+    if av_points > glob_stat['most_rated_country']['points']:
+        glob_stat['most_rated_country']['points'] = av_points
+        glob_stat['most_rated_country']['items'] = {country}
+    elif av_points == glob_stat['most_rated_country']['points']:
+        glob_stat['most_rated_country']['items'].add(country)
+    # underrated country
+    if av_points < glob_stat['underrated_country']['points']:
+        glob_stat['underrated_country']['points'] = av_points
+        glob_stat['underrated_country']['items'] = {country}
+    elif av_points == glob_stat['underrated_country']['points']:
+        glob_stat['underrated_country']['items'].add(country)
+
 # most active commentator(s)
 max_comm = max(glob_stat['tasters'].values())
 list_comm = [k for k, v in glob_stat['tasters'].items() if v == max_comm]
 
 
 def to_str_json(s):
+    s = sorted(list(s))
     if len(s) > 1:
         return '[\n        "' + '",\n        "'.join(s) + '"\n    ]'
     else:
@@ -278,6 +270,7 @@ glob_stat_json = f"""
 
 
 def to_str_md(s):
+    s = sorted(list(s))
     if len(s) > 1:
         return ' - ' + '\n - '.join(s) + '\n'
     else:
@@ -312,7 +305,7 @@ with open(result_files['md_template'], 'r') as md_file:
     md_content = md_content.replace('{var_stat_md}', var_stat_md)
 with open(result_files['markdown'], 'w') as md_file:
     md_file.write(md_content)
-print(result_files['md_template'], "file completed")
+print(result_files['markdown'], "file completed")
 
 # write results to json file
 stat_json_string = f"""{{"statistics": {{
