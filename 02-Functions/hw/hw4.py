@@ -63,5 +63,4 @@ for func in ['min', 'max', 'any']:
     except TypeError:
         print(f"Can't get cource code for built-in function {func}", sep="\n")
 
-# print("---\n", "Show docstrings for hw functions:\n", "\n".join(docstrings))
-print(*docstrings)
+print("---\n", "Show docstrings for hw functions:\n", *docstrings)
