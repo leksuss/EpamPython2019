@@ -40,6 +40,37 @@ PEP8 соблюдать строго, проверку делаю автотес
 import datetime
 
 
+class Homework():
+    def __init__(self, text, deadline):
+        self.text = text
+        self.deadline = datetime.timedelta(days=deadline)
+        self.created = datetime.datetime.now()
+
+    def is_active(self):
+        return datetime.datetime.now() < self.created + self.deadline
+
+
+class Teacher():
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    def create_homework(self, text, deadline):
+        return Homework(text, deadline)
+
+
+class Student():
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+    def do_homework(self, Homework):
+        if Homework.is_active():
+            return Homework
+        else:
+            print('You are late')
+
+
 if __name__ == '__main__':
     teacher = Teacher('Daniil', 'Shadrin')
     student = Student('Roman', 'Petrov')
