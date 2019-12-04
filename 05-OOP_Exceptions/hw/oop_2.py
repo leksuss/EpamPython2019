@@ -49,8 +49,73 @@ PEP8 соблюдать строго, проверку делаю автотес
 К названием остальных переменных, классов и тд. подходить ответственно -
 давать логичные подходящие имена.
 """
+"""
+Правильно ли я понял, что нужно проверять уникальность solution и добавлять решение к заданию только в том случае, если такого solution'а в рамках данного задания среди всех студентов еще не было?
+Что делать, если появляется дубликат solution'а? Просто игнорировать дублирующее решение ученика?
+"""
+
 import datetime
 from collections import defaultdict
+
+
+class DeadlineError(Exception):
+    def __init__(self):
+        Exception.__init__(self, "You are late")
+
+
+class Person():
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+
+class Teacher(Person):
+
+    homework_done = defaultdict(set)
+
+    def create_homework(self, text, deadline):
+        return Homework(text, deadline)
+
+    def check_homework(self, homework_res):
+        if len(homework_res.solution) > 5:
+            Teacher.homework_done[homework_res.homework].add(homework_res)
+            return True
+        return False
+
+    def reset_results(homework=None):
+        if homework:
+            Teacher.homework_done.pop(homework, '')
+        else:
+            Teacher.homework_done.clear()
+
+
+class Student(Person):
+    def do_homework(self, homework, solution):
+        if homework.is_active():
+            return HomeworkResult(self, homework, solution)
+        else:
+            raise DeadlineError
+
+
+class Homework():
+    def __init__(self, text, deadline):
+        self.text = text
+        self.deadline = datetime.timedelta(days=deadline)
+        self.created = datetime.datetime.now()
+
+    def is_active(self):
+        return datetime.datetime.now() < self.created + self.deadline
+
+
+class HomeworkResult():
+    def __init__(self, student, homework, solution):
+        if isinstance(homework, Homework):
+            self.homework = homework
+        else:
+            raise TypeError('You gave a not Homework object')
+        self.solution = solution
+        self.author = student
+        self.created = datetime.datetime.now()
 
 
 if __name__ == '__main__':
