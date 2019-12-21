@@ -55,8 +55,7 @@ from collections import defaultdict
 
 
 class DeadlineError(Exception):
-    def __init__(self):
-        Exception.__init__(self, "You are late")
+    pass
 
 
 class Person():
@@ -78,11 +77,12 @@ class Teacher(Person):
             return True
         return False
 
-    def reset_results(homework=None):
+    @classmethod
+    def reset_results(cls, homework=None):
         if homework:
-            Teacher.homework_done.pop(homework, '')
+            cls.homework_done.pop(homework, '')
         else:
-            Teacher.homework_done.clear()
+            cls.homework_done.clear()
 
 
 class Student(Person):
@@ -90,7 +90,7 @@ class Student(Person):
         if homework.is_active():
             return HomeworkResult(self, homework, solution)
         else:
-            raise DeadlineError
+            raise DeadlineError("You are late")
 
 
 class Homework():
@@ -142,4 +142,5 @@ if __name__ == '__main__':
     opp_teacher.check_homework(result_3)
 
     print(Teacher.homework_done[oop_hw])
-    Teacher.reset_results()
+    Teacher.reset_results(docs_hw)
+    print(Teacher.homework_done)
