@@ -11,11 +11,11 @@ reset_instances_counter - сбросить счетчик экземпляров
 
 
 def instances_counter(cls):
-    setattr(cls, 'counter', 0)
+    orig_init = cls.__init__
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         cls.counter += 1
-        cls.__init__
+        orig_init(self, *args, **kwargs)
 
     def get_created_instances(self=None):
         return cls.counter
@@ -25,20 +25,27 @@ def instances_counter(cls):
         cls.counter = 0
         return total_instances
 
-    setattr(cls, '__init__', __init__)
-    setattr(cls, 'get_created_instances', get_created_instances)
-    setattr(cls, 'reset_instances_counter', reset_instances_counter)
+    cls.counter = 0
+    cls.__init__ = __init__
+    cls.get_created_instances = get_created_instances
+    cls.reset_instances_counter = reset_instances_counter
+
     return cls
 
 
 @instances_counter
 class User:
-    pass
+    def __init__(self, some_attr):
+        self.some_attr = some_attr
+
+    def prt(self):
+        print(self.some_attr)
 
 
 if __name__ == '__main__':
-
-    User.get_created_instances()  # 0
-    user, _, _ = User(), User(), User()
-    user.get_created_instances()  # 3
-    user.reset_instances_counter()  # 3
+    print(User.get_created_instances())  # 0
+    user, _, _ = User('foo'), User('bar'), User(42)
+    print(user.get_created_instances())  # 3
+    print(user.reset_instances_counter())  # 3
+    print(user.get_created_instances())  # 0
+    user.prt()  # foo
