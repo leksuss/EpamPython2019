@@ -7,17 +7,18 @@ print("It's fine")
 
 
 class Suppressor:
-    def __init__(self, error):
-        self.error = error
+    def __init__(self, *args):
+        self.list_exceptions = args
 
     def __enter__(self):
         pass
 
     def __exit__(self, *args):
-        if args[0] == self.error:
-            return True
+        return args[0] in self.list_exceptions
 
 
-with Suppressor(ZeroDivisionError):
-    print(1 / 0)
+with Suppressor(ZeroDivisionError, AttributeError):
+    [].upper()
+    1 / 0
+
 print("It's fine")
