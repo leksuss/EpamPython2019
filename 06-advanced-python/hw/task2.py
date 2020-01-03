@@ -19,6 +19,9 @@ class Quaternion:
     as kwargs: Quaternion(a=-10, b=12, c=51, d=-30)
     or as args: Quaternion(-10, 12, 51, -30)
     """
+
+    q_mapping = '', 'i', 'j', 'k'
+
     def __init__(self, *args, **kwargs):
         if len(args) == 4:
             self.q = args
@@ -26,8 +29,6 @@ class Quaternion:
             self.q = [kwargs['a'], kwargs['b'], kwargs['c'], kwargs['d']]
         else:
             raise ValueError(Quaternion.__doc__)
-
-        self.q_mapping = '', 'i', 'j', 'k'
 
     def __add__(self, other):
         return Quaternion(*[sum(i) for i in zip(self.q, other.q)])
@@ -58,14 +59,14 @@ class Quaternion:
             res = [val * other for val in self.q]
         return Quaternion(*res)
 
-    def __pair__(self):
+    def pair(self):
         return Quaternion(*[self.q[0], -self.q[1], -self.q[2], -self.q[3]])
 
     def __abs__(self):
-        return (sum(list(map(lambda x: x**2, self.q))))**0.5
+        return (sum(map(lambda x: x**2, self.q)))**0.5
 
     def __truediv__(self, other):
-        paired_other = other.__pair__()
+        paired_other = other.pair()
         reversed_other = paired_other.__mul__(1 / other.__abs__()**2)
         return self.__mul__(reversed_other)
 
