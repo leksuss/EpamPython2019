@@ -11,6 +11,7 @@ V folder1
 > print(file3 in folder2)
 True
 """
+import os
 
 
 class PrintableFolder:
@@ -19,7 +20,20 @@ class PrintableFolder:
         self.content = content
 
     def __str__(self):
-        pass
+        printable = ''
+        for root_path, _, files in os.walk(self.name):
+            current_level = root_path.count(os.sep) - self.name.count(os.sep)
+            indent = '|----' * current_level
+            printable += indent + '[' + os.path.basename(root_path) + ']\n'
+            for file in files:
+                printable += indent + '|----' + file + '\n'
+        return printable
+
+    def __contains__(self, item):
+        for root_path, dirs, files in os.walk(self.name):
+            if item in files or item in dirs:
+                return True
+        return False
 
 
 class PrintableFile:
@@ -29,3 +43,10 @@ class PrintableFile:
     def __str__(self):
         pass
 
+
+folder = PrintableFolder('sample_dir_structure', '')
+
+print(folder)
+print('zzzet' in folder)
+print('т е с т.py' in folder)
+print('absent_file' in folder)
