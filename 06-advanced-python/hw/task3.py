@@ -14,10 +14,10 @@ class Suppressor:
         pass
 
     def __exit__(self, *args):
-        return args[0] in self.list_exceptions
+        return issubclass(args[0], self.list_exceptions)
 
 
-with Suppressor(ZeroDivisionError, AttributeError):
+with Suppressor(ArithmeticError, AttributeError):
     [].upper()
     1 / 0
 
