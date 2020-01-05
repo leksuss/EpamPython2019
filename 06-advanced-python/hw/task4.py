@@ -15,9 +15,8 @@ import os
 
 
 class PrintableFolder:
-    def __init__(self, name, content):
+    def __init__(self, name):
         self.name = name
-        self.content = content
 
     def __str__(self):
         printable = ''
@@ -36,15 +35,7 @@ class PrintableFolder:
         return False
 
 
-class PrintableFile:
-    def __init__(self, name):
-        self.name = name
-
-    def __str__(self):
-        pass
-
-
-folder = PrintableFolder('sample_dir_structure', '')
+folder = PrintableFolder('sample_dir_structure')
 
 print(folder)
 print('zzzet' in folder)
