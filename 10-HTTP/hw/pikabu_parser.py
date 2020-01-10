@@ -9,9 +9,9 @@ except ImportError as e:
 requests, json, beautifulsoup4, python3_anticaptcha', sep="\n")
 
 
-ANTICAPTCHA_KEY = "fe68492ffa143b88d59eddb63cc854ba"
+ANTICAPTCHA_KEY = input("Please enter anticaptcha API key:\n").strip()
 login = 'vabavo'
-passwd = ';>a/6nOEof{x'
+passwd = input("Please enter password for user 'vabavo':\n").strip()
 website_url = 'https://pikabu.ru'
 website_captcha_key = '6Lf5DUsUAAAAAGeOi2l8EpSqiAteDx5PGFMYPkQW'
 auth_url = 'https://pikabu.ru/ajax/auth.php'
